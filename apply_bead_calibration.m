@@ -4,9 +4,9 @@ function apply_bead_calibration(varargin)
 sensors_to_drop = []; 
 
 if isempty(varargin)
-    bead_filenames = 'Z:\maxstock\222 systems\Data - Mass blaster\20190213 Calibration\1 7um PS\peak_measurements.mat';
-    expt_filename = 'Z:\maxstock\222 systems\Data - Mass blaster\20190213 B-ALL PDX spleen bm\2 bm\peak_measurements.mat';
-    calib_settings.bead_diameter = 7; % um
+    bead_filenames = 'Z:\maxstock\222 systems\Data - Mass blaster\20190326 Calibration\1 8um PS\peak_measurements.mat';
+    expt_filename = strcat(uigetdir('Z:\maxstock\222 systems'), '\peak_measurements.mat');
+    calib_settings.bead_diameter = 8; % um
     calib_settings.fluid_density = 1.003; % g/mL
     calib_settings.bead_density = 1.049; % g/mL
     calib_settings.min_beads_measured = 100; 

@@ -2,37 +2,24 @@ clear all, close all
 
 % input filenames and setings 
 reprocess_apply_calibration = false; 
+addpath(fullfile(pwd, '\helper functions'))
 
 system = 'MB1'; % MB1 or MB2
 sheet = '20190325-GBM'; % name of google sheet
-% metadata_sheet_name = '20180917_gbm_fixation';
-% metadata_sheet_name = '20190206_baf3';
-% metadata_sheet_name = '20190314_algae';
-% metadata_sheet_name = '20190315_teemu_macrophages';
 
-% system = 'blue'; 
-% metadata_sheet_name = 'gbm';
-% metadata_sheet_name = 'spleen';
-% metadata_sheet_name = 'gbm_fixation';
 
 switch system
-    case 'blue'
-        metadata_spreadsheet = 'Z:\maxstock\222 systems\Data - Blue system\experiment_metadata_blue.xlsx';
-        calibration_spreadsheet = 'Z:\maxstock\222 systems\Data - Blue system\calibration_metadata_blue.xlsx';
-        data_root = 'Z:\maxstock\222 systems\Data - Blue system\';
-    case 'mass_blaster'
-        metadata_spreadsheet = 'Z:\maxstock\222 systems\Data - Mass blaster\experiment_metadata_massblaster.xlsx';
-        calibration_spreadsheet = 'Z:\maxstock\222 systems\Data - Mass blaster\calibration_metadata_massblaster.xlsx';
+    case 'MB1'
         data_root = 'Z:\maxstock\222 systems\Data - Mass blaster';
+    case 'MB2'
+        data_root = 'Z:\maxstock\222 systems\Data - Blue system\';
+
 end 
 
-%
-addpath(fullfile(pwd, '\helper functions'))
-% metadata = read_metadata_from_spreadsheet(metadata_spreadsheet, metadata_sheet_name);
-% calib_metadata = read_metadata_from_spreadsheet(calibration_spreadsheet, 'beads');
+metadata = read_google_spreadsheet(system, sheet);
+calib_metadata = read_google_spreadsheet(system, '');
 
 
-%
 for ii = 1 : length(metadata.expt_id)
 
     apply_calibration_to_file = false; % change to true at any point
