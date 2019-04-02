@@ -2,25 +2,32 @@ clear all, close all
 
 % input filenames and setings 
 reprocess_apply_calibration = false; 
+addpath(fullfile(pwd, '\helper functions'))
 
 system = 'MB1'; % MB1 or MB2
 sheet = '20190325-GBM'; % name of google sheet
 
-switch system
-    case 'blue'
 
-        data_root = 'Z:\maxstock\222 systems\Data - Blue system\';
-    case 'mass_blaster'
+switch system
+    case 'MB1'
         data_root = 'Z:\maxstock\222 systems\Data - Mass blaster';
+    case 'MB2'
+        data_root = 'Z:\maxstock\222 systems\Data - Blue system\';
+
 end 
 
-%
-addpath(fullfile(pwd, '\helper functions'))
-% metadata = read_metadata_from_spreadsheet(metadata_spreadsheet, metadata_sheet_name);
-% calib_metadata = read_metadata_from_spreadsheet(calibration_spreadsheet, 'beads');
+metadata = read_google_spreadsheet(system, sheet);
+calib_metadata = read_google_spreadsheet(system, '');
+
+function convert_field_to_numeric(metadata, fieldname)
+
+metadata_out = mat2cell(str2num(cell2mat(metadata.(fieldname))), length(metadata.(fieldname)), 1)
+
+end
+% calib_metadata.bead_diam = cell2mat(calib_metadata.bead_diam);
+% calib_metadata.bead_Deensity = cell2mat(calib_metadata.bead_density);
 
 
-%
 for ii = 1 : length(metadata.expt_id)
 
     apply_calibration_to_file = false; % change to true at any point
@@ -33,9 +40,9 @@ for ii = 1 : length(metadata.expt_id)
 
     peak_file_already_exists = check_for_file_in_directory(full_directory, 'peak_measurements.mat');
     
-    if peak_file_already_exists & metadata.redo_peak_detection{ii} ~= 'T'
+    if peak_file_already_exists & ~strcmp(metadata.redo_peak_detection{ii}, 'T')
        fprintf('Already found peaks for file %.0f. ', ii);     
-    elseif peak_file_already_exists & metadata.redo_peak_detection{ii} == 'T'
+    elseif peak_file_already_exists & strcmp(metadata.redo_peak_detection{ii}, 'T')
         fprintf('Overwriting existing peak detection for file %.0f.\n', ii);
         measure_peak_heights(full_directory);
         apply_calibration_to_file = true; 

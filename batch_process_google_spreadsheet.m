@@ -18,6 +18,9 @@ end
 
 metadata = read_google_spreadsheet(system, sheet);
 calib_metadata = read_google_spreadsheet(system, '');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_diam');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_density');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'fluid_density');
 
 
 for ii = 1 : length(metadata.expt_id)
@@ -32,9 +35,9 @@ for ii = 1 : length(metadata.expt_id)
 
     peak_file_already_exists = check_for_file_in_directory(full_directory, 'peak_measurements.mat');
     
-    if peak_file_already_exists & metadata.redo_peak_detection{ii} ~= 'T'
+    if peak_file_already_exists & ~strcmp(metadata.redo_peak_detection{ii}, 'T')
        fprintf('Already found peaks for file %.0f. ', ii);     
-    elseif peak_file_already_exists & metadata.redo_peak_detection{ii} == 'T'
+    elseif peak_file_already_exists & strcmp(metadata.redo_peak_detection{ii}, 'T')
         fprintf('Overwriting existing peak detection for file %.0f.\n', ii);
         measure_peak_heights(full_directory);
         apply_calibration_to_file = true; 
