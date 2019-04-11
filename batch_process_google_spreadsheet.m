@@ -5,7 +5,7 @@ reprocess_apply_calibration = false;
 addpath(fullfile(pwd, '\helper functions'))
 
 system = 'MB1'; % MB1 or MB2
-sheet = '20190325-GBM'; % name of google sheet
+sheet = '20190408-Macrophages'; % name of google sheet
 
 
 switch system
@@ -67,7 +67,7 @@ for ii = 1 : length(metadata.expt_id)
         calib_settings.bead_diameter = calib_metadata.bead_diam{bead_metadata_rownumber}; % um
         calib_settings.fluid_density = calib_metadata.fluid_density{bead_metadata_rownumber}; % g/mL
         calib_settings.bead_density = calib_metadata.bead_density{bead_metadata_rownumber}; % g/mL
-        calib_settings.min_beads_measured = 100; 
+        calib_settings.min_beads_measured = 50; 
         calib_settings.max_bead_cv = 5; 
         
         apply_bead_calibration(full_filename, full_bead_filename, calib_settings);  
