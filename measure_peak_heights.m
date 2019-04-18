@@ -38,6 +38,9 @@ settings.plot_decimation = 10;
 % get file names from structure
 files = dir(fullfile(directory, '*.bin') );   % structure listing all *.bin files
 files = {files.name}';    
+if isempty(files)
+    error(strcat('Did not find data in directory: ', directory))
+end
     
 % Read frequency signals
 data(numel(files)) = struct('frequency_signal', []);

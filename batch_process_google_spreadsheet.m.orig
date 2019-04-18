@@ -8,9 +8,9 @@ addpath(fullfile(pwd, '\helper functions'))
 system = 'MB2';
 sheet = '20190325-GBM'; % name of google sheet
 =======
-
-
->>>>>>> b8efec98b95727d5ba05d41881ad163a9a207277
+system = 'MB1'; % MB1 or MB2
+sheet = '20190408-Macrophages'; % name of google sheet
+>>>>>>> b9efec98b95727d5ba05d41881ad163a9a207277
 
 
 switch system
