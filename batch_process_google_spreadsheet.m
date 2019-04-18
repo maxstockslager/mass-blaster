@@ -4,7 +4,7 @@ clear all, close all
 reprocess_apply_calibration = false; 
 addpath(fullfile(pwd, '\helper functions'))
 
-system = 'MB1'; % MB1 or MB2
+system = 'MB2';
 sheet = '20190325-GBM'; % name of google sheet
 
 
