@@ -4,9 +4,8 @@ clear all, close all
 reprocess_apply_calibration = false; 
 addpath(fullfile(pwd, '\helper functions'))
 
-system = 'MB1'; % MB1 or MB2
-sheet = '20190408-Macrophages'; % name of google sheet
-
+system = 'MB1';
+sheet = '20190417-BoneMarrow'; % name of google sheet
 
 switch system
     case 'MB1'
@@ -17,7 +16,11 @@ switch system
 end 
 
 metadata = read_google_spreadsheet(system, sheet);
+metadata = convert_field_to_numeric(metadata, 'expt_id');
+metadata = convert_field_to_numeric(metadata, 'calib_id_to_use');
+
 calib_metadata = read_google_spreadsheet(system, '');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'expt_id');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_diam');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_density');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'fluid_density');

@@ -10,6 +10,8 @@ switch system
                 gid = '518678333';
             case '20190408-Macrophages'
                 gid = '1617073548';
+            case '20190417-BoneMarrow'
+                gid = '2128580955';
             otherwise
                 gid = '';
 end

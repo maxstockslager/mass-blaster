@@ -4,9 +4,8 @@ clear all, close all
 reprocess_apply_calibration = false; 
 addpath(fullfile(pwd, '\helper functions'))
 
-system = 'MB1'; % MB1 or MB2
-sheet = '20190325-GBM'; % name of google sheet
-
+system = 'MB1';
+sheet = '20190417-BoneMarrow'; % name of google sheet
 
 switch system
     case 'MB1'
@@ -17,15 +16,14 @@ switch system
 end 
 
 metadata = read_google_spreadsheet(system, sheet);
+metadata = convert_field_to_numeric(metadata, 'expt_id'
+
 calib_metadata = read_google_spreadsheet(system, '');
-
-function convert_field_to_numeric(metadata, fieldname)
-
-metadata_out = mat2cell(str2num(cell2mat(metadata.(fieldname))), length(metadata.(fieldname)), 1)
-
-end
-% calib_metadata.bead_diam = cell2mat(calib_metadata.bead_diam);
-% calib_metadata.bead_Deensity = cell2mat(calib_metadata.bead_density);
+calib_metadata = convert_field_to_numeric(calib_metadata, 'expt_id');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'calib_id_to_use');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_diam');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_density');
+calib_metadata = convert_field_to_numeric(calib_metadata, 'fluid_density');
 
 
 for ii = 1 : length(metadata.expt_id)
@@ -63,7 +61,7 @@ for ii = 1 : length(metadata.expt_id)
                  metadata.calib_id_to_use{ii}, ...
                  ii);
          
-        bead_metadata_rownumber = find(cell2mat(calib_metadata.expt_id) == metadata.calib_id_to_use{ii});
+        bead_metadata_rownumber = find(calib_metadata.expt_id == metadata.calib_id_to_use{ii});
         full_bead_filename = fullfile(data_root, ...
                       calib_metadata.parent_folder{bead_metadata_rownumber}, ...
                       calib_metadata.experiment_folder{bead_metadata_rownumber}, ...
@@ -72,7 +70,7 @@ for ii = 1 : length(metadata.expt_id)
         calib_settings.bead_diameter = calib_metadata.bead_diam{bead_metadata_rownumber}; % um
         calib_settings.fluid_density = calib_metadata.fluid_density{bead_metadata_rownumber}; % g/mL
         calib_settings.bead_density = calib_metadata.bead_density{bead_metadata_rownumber}; % g/mL
-        calib_settings.min_beads_measured = 100; 
+        calib_settings.min_beads_measured = 50; 
         calib_settings.max_bead_cv = 5; 
         
         apply_bead_calibration(full_filename, full_bead_filename, calib_settings);  
