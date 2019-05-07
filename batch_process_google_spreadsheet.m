@@ -4,8 +4,8 @@ clear all, close all
 reprocess_apply_calibration = false; 
 addpath(fullfile(pwd, '\helper functions'))
 
-system = 'MB1';
-sheet = '20190417-BoneMarrow'; % name of google sheet
+system = 'MB2';
+sheet = '20190325-GBM'; % name of google sheet
 
 switch system
     case 'MB1'
