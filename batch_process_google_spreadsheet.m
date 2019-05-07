@@ -16,7 +16,7 @@ switch system
 end 
 
 metadata = read_google_spreadsheet(system, sheet);
-metadata = convert_field_to_numeric(metadata, 'expt_id');
+% metadata = convert_field_to_numeric(metadata, 'expt_id');
 metadata = convert_field_to_numeric(metadata, 'calib_id_to_use');
 
 calib_metadata = read_google_spreadsheet(system, '');
