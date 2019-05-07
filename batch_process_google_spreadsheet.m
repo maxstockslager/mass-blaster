@@ -4,7 +4,7 @@ clear all, close all
 reprocess_apply_calibration = false; 
 addpath(fullfile(pwd, '\helper functions'))
 
-system = 'MB2';
+system = 'MB1';
 sheet = '20190325-GBM'; % name of google sheet
 
 switch system
@@ -16,11 +16,8 @@ switch system
 end 
 
 metadata = read_google_spreadsheet(system, sheet);
-% metadata = convert_field_to_numeric(metadata, 'expt_id');
-metadata = convert_field_to_numeric(metadata, 'calib_id_to_use');
 
 calib_metadata = read_google_spreadsheet(system, '');
-calib_metadata = convert_field_to_numeric(calib_metadata, 'expt_id');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_diam');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'bead_density');
 calib_metadata = convert_field_to_numeric(calib_metadata, 'fluid_density');
@@ -61,7 +58,7 @@ for ii = 1 : length(metadata.expt_id)
                  metadata.calib_id_to_use{ii}, ...
                  ii);
          
-        bead_metadata_rownumber = find(cell2mat(calib_metadata.expt_id) == metadata.calib_id_to_use{ii});
+        bead_metadata_rownumber = find(strcmp(calib_metadata.expt_id, metadata.calib_id_to_use{ii}));
         full_bead_filename = fullfile(data_root, ...
                       calib_metadata.parent_folder{bead_metadata_rownumber}, ...
                       calib_metadata.experiment_folder{bead_metadata_rownumber}, ...
