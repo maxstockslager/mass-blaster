@@ -89,7 +89,7 @@ for ii = 1 : length(metadata.expt_id)
   
         % Check whether peak heights have been detected for this bead
         % calibration file. 
-        calib_file_exists = check_for_file_in_directory(full_bead_filename);
+        calib_file_exists = exist(full_bead_filename) == 2;
         if ~calib_file_exists
             fprintf('Calibration peaks not detected for file %s (calibration %s).\n', metadata.expt_id{ii}, metadata.calib_id_to_use{ii});
             fprintf('Continuing to next file.\n')
