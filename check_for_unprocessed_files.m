@@ -35,7 +35,7 @@ for ii = 1 : length(metadata.expt_id)
     % Check whether data exists
     data_exists = check_for_file_in_directory(full_directory, 'c00.bin');
     if ~data_exists
-        fprintf('SMR data MISSING.\n');
+        fprintf('SMR data **MISSING**.\n');
         files_to_review = [files_to_review, metadata.expt_id{ii}];
         continue
     end
@@ -45,7 +45,7 @@ for ii = 1 : length(metadata.expt_id)
     if peak_file_already_exists && ~strcmp(metadata.redo_peak_detection{ii}, 'T')
        fprintf('peak detection done, '); 
     elseif ~peak_file_already_exists
-        fprintf('peak detection MISSING.\n');
+        fprintf('peak detection **MISSING**.\n');
         files_to_review = [files_to_review, metadata.expt_id{ii}];
         continue
     end
@@ -55,7 +55,7 @@ for ii = 1 : length(metadata.expt_id)
     if mass_file_already_exists
         fprintf('calibration applied.\n');
     elseif ~mass_file_already_exists
-        fprintf('calibration MISSING.\n');
+        fprintf('calibration **MISSING**.\n');
         files_to_review = [files_to_review, metadata.expt_id{ii}];
     end     
  
@@ -66,7 +66,7 @@ fprintf('-------------------------- SUMMARY --------------------------\n')
 if isempty(files_to_review)
     fprintf('No missing data.\n');
 else
-    fprint('Review the following files:\n')
+    fprintf('Review the following files:\n')
     for ii = 1 : numel(files_to_review)
         fprintf('%s\n', files_to_review{ii})
     end

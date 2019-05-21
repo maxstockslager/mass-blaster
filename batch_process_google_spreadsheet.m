@@ -79,7 +79,6 @@ for ii = 1 : length(metadata.expt_id)
         if isempty(bead_metadata_rownumber)
             fprintf('Did not find %s in the calibration metadata! Moving to next file.\n', ...
                     metadata.calib_id_to_use{ii});
-                error();
             continue
         end
         
@@ -87,7 +86,16 @@ for ii = 1 : length(metadata.expt_id)
                       calib_metadata.parent_folder{bead_metadata_rownumber}, ...
                       calib_metadata.experiment_folder{bead_metadata_rownumber}, ...
                       'peak_measurements.mat');
-
+  
+        % Check whether peak heights have been detected for this bead
+        % calibration file. 
+        calib_file_exists = check_for_file_in_directory(full_bead_filename);
+        if ~calib_file_exists
+            fprintf('Calibration peaks not detected for file %s (calibration %s).\n', metadata.expt_id{ii}, metadata.calib_id_to_use{ii});
+            fprintf('Continuing to next file.\n')
+            continue
+        end       
+                  
         calib_settings = struct(...
             'bead_diameter', calib_metadata.bead_diam{bead_metadata_rownumber}, ...
             'fluid_density', calib_metadata.fluid_density{bead_metadata_rownumber}, ...
