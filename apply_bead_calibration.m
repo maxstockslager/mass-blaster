@@ -26,9 +26,16 @@ end
 % sensitivities = merge_bead_calibrations(bead_filenames, calib_settings); 
 sensitivities = get_sensitivities(bead_filenames, calib_settings);
 peak_measurements = read_peak_data(expt_filename);
-peak_measurements = apply_calibration(peak_measurements, sensitivities);
-sensors_to_drop = union(sensors_to_drop, find(isnan(sensitivities)));
-save_mass_measurements(expt_filename, peak_measurements, sensors_to_drop)
+
+if length(peak_measurements) == length(sensitivites)
+    peak_measurements = apply_calibration(peak_measurements, sensitivities);
+    sensors_to_drop = union(sensors_to_drop, find(isnan(sensitivities)));
+    save_mass_measurements(expt_filename, peak_measurements, sensors_to_drop)
+else
+    fprintf('Calibration and measurement have different numbers of cantilevers!\n')
+    fprintf('Calibration not applied.\n')
+end
+
 
        
 end
