@@ -63,20 +63,16 @@ end
     
 % Detect peaks under threshold. Get nx2 array of start+end indices.    
 for sensor_number = 1 : numel(data)
-    
     if any(sensors_to_skip == sensor_number)
        fprintf('***WARNING: skipping sensor %.0f***\n', sensor_number)
        continue
     end
     
     fprintf('Detecting peaks in sensor %.0f...\n', sensor_number);
-    
     peak_range_indices = detect_peaks(data(sensor_number).bandpass, settings);
     fprintf('    detected %.0f continuous segments below threshold...\n', length(peak_range_indices));
-   
     current_sensor_peak_measurements = get_peak_data(data(sensor_number), peak_range_indices, settings);
     fprintf('    extracted frequency signal from these %.0f segments...\n', length(current_sensor_peak_measurements.raw_signal));
-    
     current_sensor_peak_measurements = estimate_peak_heights(current_sensor_peak_measurements, settings); 
     fprintf('    estimated heights of these %.0f peaks...\n', length(current_sensor_peak_measurements.raw_signal));
 
@@ -93,13 +89,11 @@ for sensor_number = 1 : numel(data)
     end
     
     suptitle(sprintf('Sensor %.0f peak detection', sensor_number));
-    
     if ~exist('peak_measurements')
         peak_measurements = current_sensor_peak_measurements;
     else
         peak_measurements(sensor_number) = current_sensor_peak_measurements;
     end
-    
 end
 
 % Compile some experiment data (duration, datarate, total # peaks, ...)
@@ -118,7 +112,6 @@ fprintf('Peak measurements saved. \n');
 % Export spreadsheet
 fprintf('Exporting data to spreadsheet...\n');
 outputSpreadsheetFilename = strcat(directory, '\peaks.xlsx');
-
 outputArray = [];
 totalLength = max([peak_measurements.n_peaks]);
 
@@ -127,9 +120,7 @@ for sensor_number = 1 : numel(peak_measurements)
     col2 = peak_measurements(sensor_number).peak_durations_time(:);
     col1 = vertcat(col1, NaN(totalLength-length(col1), 1));
     col2 = vertcat(col2, NaN(totalLength-length(col2), 1));
-
     outputArray = [outputArray, col1, col2];
-
 end
 
 xlswrite(outputSpreadsheetFilename, outputArray)

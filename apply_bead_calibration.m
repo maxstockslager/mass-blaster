@@ -90,12 +90,6 @@ fid = fopen(output_filename, 'w');
 fprintf(fid, output_colnames);
 fclose(fid);
 dlmwrite(output_filename, output_array, '-append');
-
 end
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% % Merge multiple bead calibration runs into one
-% function sensitivities = merge_bead_calibrations(bead_filenames, calib_settings)
-% sensitivities = compare_calibrations(bead_filenames, calib_settings);
-% end
 

@@ -14,8 +14,7 @@ switch system
                 gid = '2128580955';
             otherwise
                 gid = '';
-end
-
+        end
     case 'MB2'
         key = '1x3tMqMacX6RdZQtH0SXU7R_6uimEX3XrPt8fG8byvQ8';
         switch sheet
@@ -23,9 +22,7 @@ end
                 gid = '1426304271';
             otherwise 
                 gid = '';
-                
         end
-        
     otherwise
         error('Did not find a system with this name.');
 end
