@@ -1,13 +1,7 @@
 addpath(fullfile(pwd, '\helper functions'))
 
 SETTINGS = read_settings('SETTINGS.csv');
-
-switch SETTINGS.system
-    case 'MB1'
-        DATA_ROOT = 'Z:\maxstock\222 systems\Data - Mass blaster\';
-    case 'MB2'
-        DATA_ROOT = 'Z:\maxstock\222 systems\Data - Blue system\';
-end 
+DATA_ROOT = system_name_to_data_root(SETTINGS.system);
 
 metadata = read_google_spreadsheet(SETTINGS.system, SETTINGS.sheet);
 calib_metadata = read_google_spreadsheet(SETTINGS.system, '');

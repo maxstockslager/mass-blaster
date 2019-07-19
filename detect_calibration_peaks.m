@@ -1,22 +1,7 @@
 addpath(fullfile(pwd, '\helper functions'))
 
-% input filenames and setings 
-% SETTINGS = struct(...
-%     'system', 'MB1', ...
-%     'sheet', '20190325-GBM' ...
-% );
-
-SETTINGS = struct(...
-    'system', 'MB2', ...
-    'sheet', '20190325-GBM' ...
-);
-
-switch SETTINGS.system
-    case 'MB1'
-        DATA_ROOT = 'Z:\maxstock\222 systems\Data - Mass blaster';
-    case 'MB2'
-        DATA_ROOT = 'Z:\maxstock\222 systems\Data - Blue system\';
-end 
+SETTINGS = read_settings('SETTINGS.csv');
+DATA_ROOT = system_name_to_data_root(SETTINGS.system);
 
 metadata = read_google_spreadsheet(SETTINGS.system, '');
 

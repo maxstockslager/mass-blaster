@@ -23,7 +23,6 @@ if ~isempty(sensors_to_drop)
 end
 
 % Read in bead data & measurement data
-% sensitivities = merge_bead_calibrations(bead_filenames, calib_settings); 
 sensitivities = get_sensitivities(bead_filenames, calib_settings);
 peak_measurements = read_peak_data(expt_filename);
 
@@ -35,9 +34,6 @@ else
     fprintf('Calibration and measurement have different numbers of cantilevers!\n')
     fprintf('Calibration not applied.\n')
 end
-
-
-       
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
