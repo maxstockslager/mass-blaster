@@ -1,13 +1,6 @@
-clear all, close all
-
 addpath(fullfile(pwd, '\helper functions'))
 
-% input filenames and setings 
-SETTINGS = struct(...
-    'system', 'MB2', ...
-    'sheet', '20190325-GBM', ...
-    'reprocess_apply_calibration', false ...
-);
+SETTINGS = read_settings('SETTINGS.csv');
 
 switch SETTINGS.system
     case 'MB1'

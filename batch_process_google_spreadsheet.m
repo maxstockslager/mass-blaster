@@ -1,13 +1,6 @@
-clear all, close all
-
 addpath(fullfile(pwd, '\helper functions'))
 
-% input filenames and setings 
-SETTINGS = struct(...
-    'system', 'MB2', ...
-    'sheet', '20190325-GBM', ...
-    'reprocess_apply_calibration', false ...
-);
+SETTINGS = read_settings('SETTINGS.csv');
 
 switch SETTINGS.system
     case 'MB1'
@@ -15,7 +8,6 @@ switch SETTINGS.system
     case 'MB2'
         DATA_ROOT = 'Z:\maxstock\222 systems\Data - Blue system\';
 end 
-
 
 metadata = read_google_spreadsheet(SETTINGS.system, SETTINGS.sheet);
 calib_metadata = read_google_spreadsheet(SETTINGS.system, '');
@@ -79,6 +71,7 @@ for ii = 1 : length(metadata.expt_id)
         if isempty(bead_metadata_rownumber)
             fprintf('Did not find %s in the calibration metadata! Moving to next file.\n', ...
                     metadata.calib_id_to_use{ii});
+
             continue
         end
         
@@ -105,8 +98,6 @@ for ii = 1 : length(metadata.expt_id)
         );
     
         apply_bead_calibration(full_filename, full_bead_filename, calib_settings);  
-    end
-       
  
+    end
 end
-
