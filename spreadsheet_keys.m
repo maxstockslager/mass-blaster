@@ -6,7 +6,7 @@ switch system
         switch sheet
             case '20190812-baf3'
                 gid = '815719910';
-            case '20190325-GBM'
+            case '20190325-gbm'
                 gid = '1426304271';
             case '20190325-Leukemia'
                 gid = '518678333';
@@ -14,6 +14,8 @@ switch system
                 gid = '1617073548';
             case '20190417-BoneMarrow'
                 gid = '2128580955';
+            case '20190826-gbm-seeding'
+                gid = '696142488';
             otherwise
                 gid = '';
         end
@@ -22,7 +24,7 @@ switch system
         switch sheet
             case '20190812-baf3'
                 gid = '973793667';
-            case '20190325-GBM'
+            case '20190325-gbm'
                 gid = '1426304271';
             otherwise 
                 gid = '';
