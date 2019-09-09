@@ -20,14 +20,14 @@ settings = struct(...
     'quantile_decimation', 10, ...
     'min_peak_duration', 8/1000, ...
     'max_peak_duration', 150/1000, ...
-    'detection_threshold', -2, ...
-    'pad_indices_ratio', 1.5, ...
+    'detection_threshold', -1, ...
+    'pad_indices_ratio', 1, ...
     'baseline_fraction', 0.15, ...
     'peak_fit_window_fraction', 0.06, ...
     'poly_fit_order', 2, ...
     'sgolay_order', 3, ...
     'sgolay_length', 51, ...
-    'baseline_deviation_limit', 0.5, ...
+    'baseline_deviation_limit', 3, ...
     'colors', linspecer(12), ...
     'max_peaks_to_plot', 100, ...
     'min_peaks_to_plot', 10, ...
@@ -53,42 +53,66 @@ parfor ii = 1 : numel(data)
 end
 data = filt_data; clear('filt_data');
 
-% Plot peak detection
-freqSignals = figure; figure(freqSignals)
-for sensor_number = 1 : numel(data)
-    subplot(ceil(numel(data)/2), 2, sensor_number);
-    plot(data(sensor_number).bandpass(1:settings.plot_decimation:end), 'Color', 0.65*[1 1 1]);
-    hold on
-end
+% % Plot peak detection
+% freqSignals = figure; figure(freqSignals)
+% for sensor_number = 1 : numel(data)
+%     subplot(ceil(numel(data)/2), 2, sensor_number);
+%     plot(data(sensor_number).bandpass(1:settings.plot_decimation:end), 'Color', 0.65*[1 1 1]);
+%     hold on
+% end
     
 % Detect peaks under threshold. Get nx2 array of start+end indices.    
+
+figure
 for sensor_number = 1 : numel(data)
     if any(sensors_to_skip == sensor_number)
        fprintf('***WARNING: skipping sensor %.0f***\n', sensor_number)
        continue
     end
     
+    subplot(ceil(numel(data)/2), 2, sensor_number);
+    plot(data(sensor_number).bandpass, 'Color', 0.65*[1 1 1]);
+    hold on
+    
+    
     fprintf('Detecting peaks in sensor %.0f...\n', sensor_number);
     peak_range_indices = detect_peaks(data(sensor_number).bandpass, settings);
     fprintf('    detected %.0f continuous segments below threshold...\n', length(peak_range_indices));
+    
+    
     current_sensor_peak_measurements = get_peak_data(data(sensor_number), peak_range_indices, settings);
     fprintf('    extracted frequency signal from these %.0f segments...\n', length(current_sensor_peak_measurements.raw_signal));
     current_sensor_peak_measurements = estimate_peak_heights(current_sensor_peak_measurements, settings); 
     fprintf('    estimated heights of these %.0f peaks...\n', length(current_sensor_peak_measurements.raw_signal));
 
-    [current_sensor_peak_measurements, n_accepted, n_rejected] = filter_peak_measurements(current_sensor_peak_measurements, settings);
-
-    figure
-    max_peaks_to_plot = 64; 
-    for peak_number = 1:min([current_sensor_peak_measurements.n_peaks, max_peaks_to_plot])
-        subplot(8, 8, peak_number)
-        plot_peak_fit(current_sensor_peak_measurements.peak_plot_data(peak_number));
-        hold on
-        plot(get(gca, 'XLim'), settings.detection_threshold*[1 1], '--', 'Color', ...
-            0.65*[1 1 1]);
+    for peak_number = 1 : current_sensor_peak_measurements.n_peaks
+        start_idx = current_sensor_peak_measurements.peakRanges(peak_number, 1);
+        end_idx = current_sensor_peak_measurements.peakRanges(peak_number, 2);
+        plot(start_idx:end_idx, ...
+             data(sensor_number).bandpass(start_idx:end_idx), 'r')
     end
     
-    suptitle(sprintf('Sensor %.0f peak detection', sensor_number));
+    [current_sensor_peak_measurements, ~, ~] = filter_peak_measurements(current_sensor_peak_measurements, settings);
+
+    for peak_number = 1 : current_sensor_peak_measurements.n_peaks
+        start_idx = current_sensor_peak_measurements.peakRanges(peak_number, 1);
+        end_idx = current_sensor_peak_measurements.peakRanges(peak_number, 2);
+        plot(start_idx:end_idx, ...
+             data(sensor_number).bandpass(start_idx:end_idx), 'g')
+    end
+    
+  
+%     figure
+%     max_peaks_to_plot = 64; 
+%     for peak_number = 1:min([current_sensor_peak_measurements.n_peaks, max_peaks_to_plot])
+%         subplot(8, 8, peak_number)
+%         plot_peak_fit(current_sensor_peak_measurements.peak_plot_data(peak_number));
+%         hold on
+%         plot(get(gca, 'XLim'), settings.detection_threshold*[1 1], '--', 'Color', ...
+%             0.65*[1 1 1]);
+%     end
+    
+%     suptitle(sprintf('Sensor %.0f peak detection', sensor_number));
     if ~exist('peak_measurements')
         peak_measurements = current_sensor_peak_measurements;
     else

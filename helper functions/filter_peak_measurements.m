@@ -5,7 +5,7 @@ function [peak_data, n_accepted, n_rejected] = filter_peak_measurements(peak_dat
 peak_heightMask = peak_data.peak_heights > abs(settings.detection_threshold);
 roughPeakHeightMask = peak_data.peak_heights > abs(settings.detection_threshold);
 baseline_deviationMask = abs(peak_data.baseline_deviation) < settings.baseline_deviation_limit;
-outlierMask = ~isoutlier(peak_data.fit_error);
+outlierMask = ~isoutlier(peak_data.fit_error, 'quartiles');
 
 fprintf('    %.0f peaks rejected based on peak height\n', peak_data.n_peaks - nnz(peak_heightMask));
 fprintf('    %.0f peaks rejected based on rough peak height\n', peak_data.n_peaks - nnz(roughPeakHeightMask));
