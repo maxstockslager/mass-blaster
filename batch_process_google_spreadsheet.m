@@ -1,3 +1,5 @@
+function batch_process_google_spreadsheet(varargin)
+
 addpath(fullfile(pwd, '\helper functions'))
 
 SETTINGS = read_settings('SETTINGS.csv');

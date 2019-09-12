@@ -1,6 +1,13 @@
+function detect_calibration_peaks(varargin);
+
 addpath(fullfile(pwd, '\helper functions'))
 
-SETTINGS = read_settings('SETTINGS.csv');
+if numel(varargin) == 0 % i.e. if SETTINGS not provided as input
+    SETTINGS = read_settings('SETTINGS.csv');
+else % i.e. if SETTINGS is provided as input
+    SETTINGS = varargin{1};
+end
+
 DATA_ROOT = system_name_to_data_root(SETTINGS.system);
 
 metadata = read_google_spreadsheet(SETTINGS.system, '');
