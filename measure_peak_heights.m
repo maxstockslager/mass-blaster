@@ -10,17 +10,16 @@ elseif isempty(varargin)
     directory = uigetdir('Z:\maxstock\222 systems');  
 end
 
-sensors_to_skip = [];
-
 % Peak detection settings 
 settings = struct(...
     'datarate', 12500, ...
     'quantile_width', 500, ...
     'quantile', 50, ...
     'quantile_decimation', 10, ...
-    'min_peak_duration', 8/1000, ...
-    'max_peak_duration', 150/1000, ...
-    'detection_threshold', -1, ...
+    'min_peak_duration', 15/1000, ...
+    'max_peak_duration', 300/1000, ...
+    'min_peak_separation', 100/1000, ...
+    'detection_threshold', -2.5, ...
     'pad_indices_ratio', 1, ...
     'baseline_fraction', 0.15, ...
     'peak_fit_window_fraction', 0.06, ...
@@ -34,85 +33,39 @@ settings = struct(...
     'plot_decimation', 10 ...
 );
 
-% get file names from structure
-files = dir(fullfile(directory, '*.bin') );   % structure listing all *.bin files
-files = {files.name}';    
-if isempty(files)
-    error(strcat('Did not find data in directory: ', directory))
-end
+%%
+data = load_data_from_directory(directory); % load .binf iles
+data = prepare_for_detection(data, settings); % bandpass filter
+
+%%
     
-% Read frequency signals
-data(numel(files)) = struct('frequency_signal', []);
-for sensor_number = 1 : numel(files)
-    data(sensor_number).frequency_signal = read_frequency_signal(fullfile(directory, files{sensor_number}));
-end
-
-fprintf('Preparing signals for peak detection...\n');
-parfor ii = 1 : numel(data)
-    filt_data(ii) = get_filtered_signal_struct(data(ii), settings); 
-end
-data = filt_data; clear('filt_data');
-
-% % Plot peak detection
-% freqSignals = figure; figure(freqSignals)
-% for sensor_number = 1 : numel(data)
-%     subplot(ceil(numel(data)/2), 2, sensor_number);
-%     plot(data(sensor_number).bandpass(1:settings.plot_decimation:end), 'Color', 0.65*[1 1 1]);
-%     hold on
-% end
-    
-% Detect peaks under threshold. Get nx2 array of start+end indices.    
-
-figure
+figs.peak_detection = figure;
 for sensor_number = 1 : numel(data)
-    if any(sensors_to_skip == sensor_number)
-       fprintf('***WARNING: skipping sensor %.0f***\n', sensor_number)
-       continue
-    end
-    
-    subplot(ceil(numel(data)/2), 2, sensor_number);
-    plot(data(sensor_number).bandpass, 'Color', 0.65*[1 1 1]);
-    hold on
-    
-    
+   
     fprintf('Detecting peaks in sensor %.0f...\n', sensor_number);
-    peak_range_indices = detect_peaks(data(sensor_number).bandpass, settings);
+        peak_range_indices = detect_peaks(data(sensor_number).bandpass, settings);
     fprintf('    detected %.0f continuous segments below threshold...\n', length(peak_range_indices));
-    
-    
-    current_sensor_peak_measurements = get_peak_data(data(sensor_number), peak_range_indices, settings);
+        current_sensor_peak_measurements = get_peak_data(data(sensor_number), peak_range_indices, settings);
     fprintf('    extracted frequency signal from these %.0f segments...\n', length(current_sensor_peak_measurements.raw_signal));
-    current_sensor_peak_measurements = estimate_peak_heights(current_sensor_peak_measurements, settings); 
-    fprintf('    estimated heights of these %.0f peaks...\n', length(current_sensor_peak_measurements.raw_signal));
+        current_sensor_peak_measurements = estimate_peak_heights(current_sensor_peak_measurements, settings); 
+    fprintf('    estimated heights of these %.0f peaks... \n', length(current_sensor_peak_measurements.raw_signal));
+    fprintf('    removing peaks that do not meet QC criteria...\n')
+    [current_sensor_peak_measurements, rej_current_sensor_peak_measurements] = ...
+        filter_peak_measurements(current_sensor_peak_measurements, settings);
+    
+    % plot accepted and rejected peaks
+    figure(figs.peak_detection);
+    make_peak_detection_plot(data, current_sensor_peak_measurements, sensor_number)
+    plot_rejected_peaks(data, rej_current_sensor_peak_measurements, sensor_number)
 
-    for peak_number = 1 : current_sensor_peak_measurements.n_peaks
-        start_idx = current_sensor_peak_measurements.peakRanges(peak_number, 1);
-        end_idx = current_sensor_peak_measurements.peakRanges(peak_number, 2);
-        plot(start_idx:end_idx, ...
-             data(sensor_number).bandpass(start_idx:end_idx), 'r')
-    end
+    figure;
+    plot_example_peaks(current_sensor_peak_measurements, settings)
+    suptitle(sprintf('Sensor %.0f accepted peak examples', sensor_number));
+   
+    figure;
+    plot_example_peaks(rej_current_sensor_peak_measurements, settings)
+    suptitle(sprintf('Sensor %.0f rejected peak examples', sensor_number));
     
-    [current_sensor_peak_measurements, ~, ~] = filter_peak_measurements(current_sensor_peak_measurements, settings);
-
-    for peak_number = 1 : current_sensor_peak_measurements.n_peaks
-        start_idx = current_sensor_peak_measurements.peakRanges(peak_number, 1);
-        end_idx = current_sensor_peak_measurements.peakRanges(peak_number, 2);
-        plot(start_idx:end_idx, ...
-             data(sensor_number).bandpass(start_idx:end_idx), 'g')
-    end
-    
-  
-%     figure
-%     max_peaks_to_plot = 64; 
-%     for peak_number = 1:min([current_sensor_peak_measurements.n_peaks, max_peaks_to_plot])
-%         subplot(8, 8, peak_number)
-%         plot_peak_fit(current_sensor_peak_measurements.peak_plot_data(peak_number));
-%         hold on
-%         plot(get(gca, 'XLim'), settings.detection_threshold*[1 1], '--', 'Color', ...
-%             0.65*[1 1 1]);
-%     end
-    
-%     suptitle(sprintf('Sensor %.0f peak detection', sensor_number));
     if ~exist('peak_measurements')
         peak_measurements = current_sensor_peak_measurements;
     else
@@ -151,4 +104,4 @@ xlswrite(outputSpreadsheetFilename, outputArray)
 fprintf('Saving summary figure...\n');
 savefig(strcat(directory, '\peak_detection.fig'))
 
-end
+% end
