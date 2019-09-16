@@ -2,7 +2,12 @@ function batch_process_google_spreadsheet(varargin)
 
 addpath(fullfile(pwd, '\helper functions'))
 
-SETTINGS = read_settings('SETTINGS.csv');
+if numel(varargin) == 0
+    SETTINGS = read_settings('SETTINGS.csv');
+else
+    SETTINGS = varargin{1};
+end
+
 DATA_ROOT = system_name_to_data_root(SETTINGS.system);
 
 metadata = read_google_spreadsheet(SETTINGS.system, SETTINGS.sheet);

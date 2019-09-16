@@ -60,6 +60,8 @@ guidata(hObject, handles);
 
 % UIWAIT makes smr_gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
+
+addpath(fullfile(pwd, '\helper functions'))
 system_names = get_system_names();
 
 % update system names
@@ -72,6 +74,8 @@ system_name = system_names{system_number};
 sheet_names = get_sheet_names(system_name);
 set(handles.sheet_names_dropdown, 'String', sheet_names);
 set(handles.sheet_names_dropdown, 'Value', 1);
+
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = smr_gui_OutputFcn(hObject, eventdata, handles) 

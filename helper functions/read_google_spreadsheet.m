@@ -1,6 +1,7 @@
 function metadata = read_google_spreadsheet(system, sheet)
 
-[key, gid] = SPREADSHEET_KEYS(system, sheet);
+%[key, gid] = SPREADSHEET_KEYS(system, sheet);
+[key, gid] = get_key_and_gid(system, sheet);
 raw = GetGoogleSpreadsheet(key, gid);
 
 %%

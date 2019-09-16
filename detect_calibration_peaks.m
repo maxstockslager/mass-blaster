@@ -1,4 +1,4 @@
-function detect_calibration_peaks(varargin);
+function detect_calibration_peaks(varargin)
 
 addpath(fullfile(pwd, '\helper functions'))
 
@@ -9,7 +9,6 @@ else % i.e. if SETTINGS is provided as input
 end
 
 DATA_ROOT = system_name_to_data_root(SETTINGS.system);
-
 metadata = read_google_spreadsheet(SETTINGS.system, '');
 
 for ii = 1 : length(metadata.expt_id)
