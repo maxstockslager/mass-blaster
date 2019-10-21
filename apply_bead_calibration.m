@@ -3,7 +3,7 @@ function apply_bead_calibration(varargin)
 % Settings
 sensors_to_drop = []; 
 if isempty(varargin)
-    bead_filenames = 'C:\Users\smr-core\Documents\Mary\20190704 Samples Yang\20190704 Samples Yang\8um beads\peak_measurements.mat';
+    bead_filenames = 'Z:\maxstock\222 systems\Data - Blue system\20190923 Calibration\1 8um PS\peak_measurements.mat';
     expt_filename = strcat(uigetdir('Z:\maxstock\222 systems'), '\peak_measurements.mat');
     
     calib_settings = struct(...
@@ -11,8 +11,8 @@ if isempty(varargin)
         'fluid_density', 1.003, ... % g/mL
         'bead_density', 1.049, ... % g/mL
         'min_beads_measured', 100, ...
-        'max_bead_csv', 5 ... % percent
-    )
+        'max_bead_cv', 7 ... % percent
+    );
 
 else
     expt_filename = varargin{1};
